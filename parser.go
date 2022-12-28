@@ -325,6 +325,8 @@ func MessageToByteArray(message *Message) []byte {
 	bytes[crc16BitIdx] = byte(this.crc16 >> 8 & 0xFF)
 	bytes[crc16BitIdx+1] = byte(this.crc16 & 0xFF)
 
+	this = nil
+
 	return bytes
 }
 
@@ -361,13 +363,13 @@ func GenSnowFlakeId() int64 {
 
 func GenSnowFlakeIdWithMachineId(machineId int) int64 {
 	// 如果想让时间戳范围更长，也可以减去一个日期
-	curTimeStamp := time.Now().UnixNano() / 1000000
+	curTimeStamp := time.Now().UnixNano() / 1e6
 
 	if curTimeStamp == lastTimeStamp {
 		// 2的12次方 -1 = 4095，每毫秒可产生4095个ID
 		if sn > 4095 {
 			time.Sleep(time.Millisecond)
-			curTimeStamp = time.Now().UnixNano() / 1000000
+			curTimeStamp = time.Now().UnixNano() / 1e6
 			sn = 0
 		}
 	} else {
